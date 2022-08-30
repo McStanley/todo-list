@@ -10,6 +10,24 @@
 </head>
 
 <body>
+    <header class="header">
+        <h1>Todo List</h1>
+    </header>
+    <nav class="nav">
+        <div role="button" class="btn-nav active">Home</div>
+        <!-- User categories go here -->
+        <div role="button" class="btn-nav">+ Add new category</div>
+    </nav>
+    <main class="main">
+        <form id="form-add">
+            <input type="text" name="title" id="title" class="hidden" placeholder="Title">
+            <input type="text" name="description" id="description" placeholder="Add a note...">
+            <div id="form-actions" class="hidden">
+                <button type="button" id="btn-submit">Close</button>
+            </div>
+        </form>
+        <div id="notes-grid"></div>
+    </main>
 </body>
 
 </html>
