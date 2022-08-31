@@ -13,11 +13,15 @@
     <header class="header">
         <h1>Todo List</h1>
     </header>
-    <nav class="nav">
-        <div role="button" class="btn-nav active">Home</div>
-        <!-- User categories go here -->
-        <div role="button" class="btn-nav">+ Add new category</div>
-    </nav>
+    <aside class="sidebar">
+        <div role="button" id="project-add" class="btn-nav">
+            <p id="project-text">+ Add new project</p>
+            <input type="text" name="project-input" id="project-input" class="hidden" placeholder="Project title">
+        </div>
+        <nav class="nav">
+            <!-- Projects go here -->
+        </nav>
+    </aside>
     <main class="main">
         <form id="form-add">
             <input type="text" name="title" id="title" class="hidden" placeholder="Title">
