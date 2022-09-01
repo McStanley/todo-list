@@ -105,3 +105,34 @@ input:focus {
 .hidden {
     display: none !important;
 }
+
+#todo-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 300px);
+    place-content: center;
+    gap: 25px;
+}
+
+.todo-card {
+    padding: 10px 15px;
+    display: flex;
+    color: #e8eaed;
+    border: 1px solid #5f6368;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.todo-title {
+    font-weight: bold;
+}
+
+.todo-actions {
+    display: flex;
+}
+
+.todo-delete {
+    margin-left: auto;
+}

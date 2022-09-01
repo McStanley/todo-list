@@ -3,16 +3,19 @@ import projects from "./projects";
 const dom = (() => {
     const init = () => {
         const projectInput = document.querySelector('#project-input');
+        const btnSubmit = document.querySelector('#btn-submit');
 
         document.addEventListener('click', toggleProjectAdd);
         projectInput.addEventListener('keyup', submitProject);
         document.addEventListener('click', toggleForm);
+        btnSubmit.addEventListener('click', submitTodo);
         showProjects();
+        showTodos();
     };
 
     const showProjects = () => {
         const nav = document.querySelector('.nav');
-        const projectList = projects.get();
+        const projectList = projects.getList();
 
         nav.replaceChildren();
 
@@ -38,9 +41,53 @@ const dom = (() => {
         projectEl.addEventListener('click', () => {
             projects.setActive(index);
             showProjects();
+            showTodos();
         });
 
         return projectEl;
+    };
+
+    const showTodos = () => {
+        const todoGrid = document.querySelector('#todo-grid');
+        const todoList = projects.getActive().todos;
+
+        todoGrid.replaceChildren();
+
+        todoList.forEach(todo => {
+            const index = todoList.indexOf(todo);
+
+            todoGrid.appendChild(constructTodo(todo, index));
+        });
+    };
+
+    const constructTodo = (todo, index) => {
+        const todoEl = document.createElement('article');
+        todoEl.classList.add('todo-card');
+        todoEl.dataset.index = index;
+
+        const titleEl = document.createElement('header');
+        titleEl.classList.add('todo-title');
+        titleEl.textContent = todo.title;
+        todoEl.appendChild(titleEl);
+
+        const descriptionEl = document.createElement('p');
+        descriptionEl.classList.add('todo-description');
+        descriptionEl.textContent = todo.description;
+        todoEl.appendChild(descriptionEl);
+
+        const actionsEl = document.createElement('div');
+        actionsEl.classList.add('todo-actions');
+
+        const deleteEl = document.createElement('button');
+        deleteEl.setAttribute('type', 'button');
+        deleteEl.classList.add('todo-delete');
+        deleteEl.textContent = 'Delete';
+        actionsEl.appendChild(deleteEl);
+
+
+        todoEl.appendChild(actionsEl);
+
+        return todoEl;
     };
 
     const toggleForm = (e) => {
@@ -49,11 +96,9 @@ const dom = (() => {
         let target = e.target;
 
         while (target) {
-            if (target === btnSubmit) {
-                // check if input data is valid
-                // if yes then submit
-                return;
-            }
+            // btnSubmit is handled by function submitTodo
+            if (target === btnSubmit) return;
+
             if (target === formAdd) {
                 openForm();
                 return;
@@ -126,10 +171,31 @@ const dom = (() => {
         closeProjectAdd();
 
         // set newly created project to active
-        const index = projects.get().length - 1;
+        const index = projects.getList().length - 1;
         projects.setActive(index);
 
         showProjects();
+        showTodos();
+    };
+
+    const submitTodo = () => {
+        const title = document.querySelector('#title');
+        const description = document.querySelector('#description');
+
+        if (!title.value) {
+            return;
+        }
+        if (!description.value) {
+            return;
+        }
+
+        projects.addTodo(title.value, description.value);
+
+        // clear input fields
+        title.value = '';
+        description.value = '';
+        closeForm();
+        showTodos();
     };
 
     return {

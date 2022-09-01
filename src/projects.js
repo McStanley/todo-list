@@ -1,10 +1,13 @@
+import todos from "./todos";
+
 const projects = (() => {
     let projectList = [];
+    let activeIndex;
 
     class Project {
         constructor(title) {
             this.title = title;
-            this.tasks = [];
+            this.todos = [];
             this.active = false;
         }
     }
@@ -15,10 +18,16 @@ const projects = (() => {
         setActive(0);
     };
 
-    const get = () => projectList;
+    const getList = () => projectList;
+
+    const getActive = () => projectList[activeIndex];
 
     const create = (title) => {
         projectList.push(new Project(title));
+    };
+
+    const addTodo = (title, description) => {
+        projectList[activeIndex].todos.push(todos.create(title, description));
     };
 
     const setActive = (index) => {
@@ -26,12 +35,16 @@ const projects = (() => {
             const indexMatch = projectList.indexOf(project) === index;
             project.active = indexMatch ? true : false;
         });
+
+        activeIndex = index;
     };
 
     return {
         init,
-        get,
+        getList,
+        getActive,
         create,
+        addTodo,
         setActive,
     };
 })();
