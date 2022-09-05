@@ -2,7 +2,6 @@ import todos from "./todos";
 
 const projects = (() => {
     let projectList = [];
-    let activeIndex;
 
     class Project {
         constructor(title) {
@@ -13,25 +12,37 @@ const projects = (() => {
     }
 
     const init = () => {
-        create('Home');
-        // activate Home
-        setActive(0);
+        // attempt to load projects from localStorage
+        projectList = load();
+
+        if (!projectList) {
+            // turn projectList into array
+            projectList = [];
+            create('Home');
+            // activate Home
+            setActive(0);
+        }
     };
 
     const getList = () => projectList;
 
-    const getActive = () => projectList[activeIndex];
+    const getActive = () => projectList[getActiveIndex()];
+
+    const getActiveIndex = () => projectList.findIndex(project => project.active);
 
     const create = (title) => {
         projectList.push(new Project(title));
+        save();
     };
 
     const addTodo = (title, description) => {
-        projectList[activeIndex].todos.push(todos.create(title, description));
+        projectList[getActiveIndex()].todos.push(todos.create(title, description));
+        save();
     };
 
     const removeTodo = (index) => {
-        projectList[activeIndex].todos.splice(index, 1);
+        projectList[getActiveIndex()].todos.splice(index, 1);
+        save();
     }
 
     const setActive = (index) => {
@@ -40,8 +51,14 @@ const projects = (() => {
             project.active = indexMatch ? true : false;
         });
 
-        activeIndex = index;
+        save();
     };
+
+    const save = () => {
+        localStorage.setItem('projects', JSON.stringify(projectList));
+    };
+
+    const load = () => JSON.parse(localStorage.getItem('projects'));
 
     return {
         init,
