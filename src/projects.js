@@ -30,6 +30,10 @@ const projects = (() => {
         projectList[activeIndex].todos.push(todos.create(title, description));
     };
 
+    const removeTodo = (index) => {
+        projectList[activeIndex].todos.splice(index, 1);
+    }
+
     const setActive = (index) => {
         projectList.forEach(project => {
             const indexMatch = projectList.indexOf(project) === index;
@@ -45,6 +49,7 @@ const projects = (() => {
         getActive,
         create,
         addTodo,
+        removeTodo,
         setActive,
     };
 })();

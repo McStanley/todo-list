@@ -87,6 +87,11 @@ const dom = (() => {
 
         todoEl.appendChild(actionsEl);
 
+        deleteEl.addEventListener('click', () => {
+            projects.removeTodo(index);
+            showTodos();
+        });
+
         return todoEl;
     };
 
