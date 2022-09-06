@@ -37,8 +37,8 @@ const projects = (() => {
         save();
     };
 
-    const addTodo = (title, description) => {
-        projectList[getActiveIndex()].todos.push(todos.create(title, description));
+    const addTodo = (title, description, priority) => {
+        projectList[getActiveIndex()].todos.push(todos.create(title, description, priority));
         save();
     };
 

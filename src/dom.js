@@ -86,8 +86,19 @@ const dom = (() => {
         deleteEl.textContent = 'Delete';
         actionsEl.appendChild(deleteEl);
 
-
         todoEl.appendChild(actionsEl);
+
+        switch (todo.priority) {
+            case 'low':
+                todoEl.classList.add('priority-low');
+                break;
+            case 'mid':
+                todoEl.classList.add('priority-mid');
+                break;
+            case 'high':
+                todoEl.classList.add('priority-high');
+                break;
+        };
 
         deleteEl.addEventListener('click', () => {
             projects.removeTodo(index);
@@ -188,6 +199,7 @@ const dom = (() => {
     const submitTodo = () => {
         const title = document.querySelector('#title');
         const description = document.querySelector('#description');
+        const priority = document.querySelector('#priority');
 
         if (!title.value) {
             return;
@@ -196,11 +208,12 @@ const dom = (() => {
             return;
         }
 
-        projects.addTodo(title.value, description.value);
+        projects.addTodo(title.value, description.value, priority.value);
 
         // clear input fields
         title.value = '';
         description.value = '';
+        priority.value = 'none';
         closeForm();
         showTodos();
     };

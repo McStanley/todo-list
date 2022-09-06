@@ -27,6 +27,16 @@ input:focus {
     outline: none;
 }
 
+select{
+    background-color: inherit;
+    color: inherit;
+    border: none;
+}
+
+option {
+    background-color: #28292c;
+}
+
 ::placeholder {
     color: lightgrey;
 }
@@ -142,4 +152,16 @@ input:focus {
 
 .todo-delete {
     margin-left: auto;
+}
+
+.priority-low {
+    border-bottom-color: green;
+}
+
+.priority-mid {
+    border-bottom-color: darkorange;
+}
+
+.priority-high {
+    border-bottom-color: firebrick;
 }
