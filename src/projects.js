@@ -15,13 +15,15 @@ const projects = (() => {
         // attempt to load projects from localStorage
         projectList = load();
 
-        if (!projectList) {
-            // turn projectList into array
-            projectList = [];
-            create('Home');
-            // activate Home
-            setActive(0);
-        }
+        if (!projectList) reset();
+    };
+
+    const reset = () => {
+        // turn projectList into array
+        projectList = [];
+        create('Home');
+        // activate Home
+        setActive(0);
     };
 
     const getList = () => projectList;
@@ -62,6 +64,7 @@ const projects = (() => {
 
     return {
         init,
+        reset,
         getList,
         getActive,
         create,

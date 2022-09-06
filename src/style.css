@@ -40,12 +40,15 @@ input:focus {
 }
 
 .sidebar {
-    padding-top: 10px;
+    padding: 10px 0px;
     grid-area: aside;
+    display: flex;
+    flex-direction: column;
 }
 
 .nav {
-    margin-top: 20px;
+    flex: 1;
+    margin: 20px 0px;
     display: flex;
     flex-direction: column;
 }
@@ -65,6 +68,10 @@ input:focus {
 
 .btn-nav.active {
     background-color: #41331c;
+}
+
+#btn-reset:hover {
+    background-color: #3d2929;
 }
 
 .main {

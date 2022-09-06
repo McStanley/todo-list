@@ -4,11 +4,13 @@ const dom = (() => {
     const init = () => {
         const projectInput = document.querySelector('#project-input');
         const btnSubmit = document.querySelector('#btn-submit');
+        const btnReset = document.querySelector('#btn-reset')
 
         document.addEventListener('click', toggleProjectAdd);
         projectInput.addEventListener('keyup', submitProject);
         document.addEventListener('click', toggleForm);
         btnSubmit.addEventListener('click', submitTodo);
+        btnReset.addEventListener('click', handleReset);
         showProjects();
         showTodos();
     };
@@ -201,6 +203,15 @@ const dom = (() => {
         description.value = '';
         closeForm();
         showTodos();
+    };
+
+    const handleReset = () => {
+        const proceed = confirm('Are you sure?');
+        if (proceed) {
+            projects.reset();
+            showProjects();
+            showTodos();
+        }
     };
 
     return {
