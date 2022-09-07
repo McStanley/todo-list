@@ -27,7 +27,7 @@ input:focus {
     outline: none;
 }
 
-select{
+select {
     background-color: inherit;
     color: inherit;
     border: none;
@@ -105,11 +105,11 @@ option {
     gap: 20px;
 }
 
-#form-actions {
+.actions {
     display: flex;
 }
 
-#btn-submit {
+.btn-right {
     margin-left: auto;
     padding: 8px 24px;
 }
@@ -164,4 +164,25 @@ option {
 
 .priority-high {
     border-bottom-color: firebrick;
+}
+
+#overlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#popup-card {
+    z-index: 100;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    width: 600px;
+    transform: translate(-50%, -50%);
+    background-color: #202124;
+}
+
+#popup-title {
+    font-size: 1.5rem;
 }

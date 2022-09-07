@@ -47,6 +47,14 @@ const projects = (() => {
         save();
     }
 
+    const updateTodo = (todoIndex, title, description, priority) => {
+        const projectIndex = getActiveIndex();
+
+        projectList[projectIndex].todos[todoIndex].title = title;
+        projectList[projectIndex].todos[todoIndex].description = description;
+        projectList[projectIndex].todos[todoIndex].priority = priority;
+    };
+
     const setActive = (index) => {
         projectList.forEach(project => {
             const indexMatch = projectList.indexOf(project) === index;
@@ -70,6 +78,7 @@ const projects = (() => {
         create,
         addTodo,
         removeTodo,
+        updateTodo,
         setActive,
     };
 })();

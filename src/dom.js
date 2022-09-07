@@ -4,13 +4,17 @@ const dom = (() => {
     const init = () => {
         const projectInput = document.querySelector('#project-input');
         const btnSubmit = document.querySelector('#btn-submit');
-        const btnReset = document.querySelector('#btn-reset')
+        const btnReset = document.querySelector('#btn-reset');
+        const btnSave = document.querySelector('#btn-save');
+        const overlay = document.querySelector('#overlay');
 
         document.addEventListener('click', toggleProjectAdd);
         projectInput.addEventListener('keyup', submitProject);
         document.addEventListener('click', toggleForm);
         btnSubmit.addEventListener('click', submitTodo);
         btnReset.addEventListener('click', handleReset);
+        btnSave.addEventListener('click', saveTodo);
+        overlay.addEventListener('click', closePopup);
         showProjects();
         showTodos();
     };
@@ -100,6 +104,11 @@ const dom = (() => {
                 break;
         };
 
+        todoEl.addEventListener('click', (e) => {
+            if (e.target.classList.contains('todo-delete')) return;
+            openPopup(todo);
+        });
+
         deleteEl.addEventListener('click', () => {
             projects.removeTodo(index);
             showTodos();
@@ -107,6 +116,30 @@ const dom = (() => {
 
         return todoEl;
     };
+
+    const openPopup = (todo) => {
+        const overlay = document.querySelector('#overlay');
+        const popupCard = document.querySelector('#popup-card');
+        const popupTitle = document.querySelector('#popup-title');
+        const popupDescription = document.querySelector('#popup-description');
+        const popupPriority = document.querySelector('#popup-priority')
+
+        popupTitle.value = todo.title;
+        popupDescription.value = todo.description;
+        popupPriority.value = todo.priority;
+        popupCard.dataset.index = projects.getActive().todos.indexOf(todo);
+
+        overlay.classList.remove('hidden');
+        popupCard.classList.remove('hidden');
+    };
+
+    const closePopup = () => {
+        const overlay = document.querySelector('#overlay');
+        const popupCard = document.querySelector('#popup-card');
+
+        overlay.classList.add('hidden');
+        popupCard.classList.add('hidden');
+    }
 
     const toggleForm = (e) => {
         const formAdd = document.querySelector('#form-add');
@@ -201,10 +234,7 @@ const dom = (() => {
         const description = document.querySelector('#description');
         const priority = document.querySelector('#priority');
 
-        if (!title.value) {
-            return;
-        }
-        if (!description.value) {
+        if (!title.value && !description.value) {
             return;
         }
 
@@ -215,6 +245,26 @@ const dom = (() => {
         description.value = '';
         priority.value = 'none';
         closeForm();
+        showTodos();
+    };
+
+    const saveTodo = () => {
+        const todoIndex = document.querySelector('#popup-card').dataset.index;
+        const title = document.querySelector('#popup-title');
+        const description = document.querySelector('#popup-description');
+        const priority = document.querySelector('#popup-priority');
+
+        if (!title.value && !description.value) {
+            return;
+        }
+
+        projects.updateTodo(todoIndex, title.value, description.value, priority.value);
+
+        // clear input fields
+        title.value = '';
+        description.value = '';
+        priority.value = 'none';
+        closePopup();
         showTodos();
     };
 
