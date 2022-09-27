@@ -53,6 +53,7 @@ const projects = (() => {
         projectList[projectIndex].todos[todoIndex].title = title;
         projectList[projectIndex].todos[todoIndex].description = description;
         projectList[projectIndex].todos[todoIndex].priority = priority;
+        save();
     };
 
     const setActive = (index) => {
