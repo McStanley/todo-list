@@ -1,285 +1,290 @@
-import projects from "./projects";
+import projects from './projects';
 
 const dom = (() => {
-    const init = () => {
-        const projectInput = document.querySelector('#project-input');
-        const btnSubmit = document.querySelector('#btn-submit');
-        const btnReset = document.querySelector('#btn-reset');
-        const btnSave = document.querySelector('#btn-save');
-        const overlay = document.querySelector('#overlay');
+  const init = () => {
+    const projectInput = document.querySelector('#project-input');
+    const btnSubmit = document.querySelector('#btn-submit');
+    const btnReset = document.querySelector('#btn-reset');
+    const btnSave = document.querySelector('#btn-save');
+    const overlay = document.querySelector('#overlay');
 
-        document.addEventListener('click', toggleProjectAdd);
-        projectInput.addEventListener('keyup', submitProject);
-        document.addEventListener('click', toggleForm);
-        btnSubmit.addEventListener('click', submitTodo);
-        btnReset.addEventListener('click', handleReset);
-        btnSave.addEventListener('click', saveTodo);
-        overlay.addEventListener('click', closePopup);
-        showProjects();
-        showTodos();
-    };
+    document.addEventListener('click', toggleProjectAdd);
+    projectInput.addEventListener('keyup', submitProject);
+    document.addEventListener('click', toggleForm);
+    btnSubmit.addEventListener('click', submitTodo);
+    btnReset.addEventListener('click', handleReset);
+    btnSave.addEventListener('click', saveTodo);
+    overlay.addEventListener('click', closePopup);
+    showProjects();
+    showTodos();
+  };
 
-    const showProjects = () => {
-        const nav = document.querySelector('.nav');
-        const projectList = projects.getList();
+  const showProjects = () => {
+    const nav = document.querySelector('.nav');
+    const projectList = projects.getList();
 
-        nav.replaceChildren();
+    nav.replaceChildren();
 
-        projectList.forEach(project => {
-            // get position of project in the array
-            const index = projectList.indexOf(project);
+    projectList.forEach((project) => {
+      // get position of project in the array
+      const index = projectList.indexOf(project);
 
-            nav.appendChild(constructProject(project, index));
-        });
-    };
+      nav.appendChild(constructProject(project, index));
+    });
+  };
 
-    const constructProject = (project, index) => {
-        const projectEl = document.createElement('div');
-        projectEl.setAttribute('role', 'button');
-        projectEl.classList.add('btn-nav');
-        projectEl.dataset.index = index;
-        projectEl.textContent = project.title;
+  const constructProject = (project, index) => {
+    const projectEl = document.createElement('div');
+    projectEl.setAttribute('role', 'button');
+    projectEl.classList.add('btn-nav');
+    projectEl.dataset.index = index;
+    projectEl.textContent = project.title;
 
-        if (project.active) {
-            projectEl.classList.add('active');
-        }
-
-        projectEl.addEventListener('click', () => {
-            projects.setActive(index);
-            showProjects();
-            showTodos();
-        });
-
-        return projectEl;
-    };
-
-    const showTodos = () => {
-        const todoGrid = document.querySelector('#todo-grid');
-        const todoList = projects.getActive().todos;
-
-        todoGrid.replaceChildren();
-
-        todoList.forEach(todo => {
-            const index = todoList.indexOf(todo);
-
-            todoGrid.appendChild(constructTodo(todo, index));
-        });
-    };
-
-    const constructTodo = (todo, index) => {
-        const todoEl = document.createElement('article');
-        todoEl.classList.add('todo-card');
-        todoEl.dataset.index = index;
-
-        const titleEl = document.createElement('header');
-        titleEl.classList.add('todo-title');
-        titleEl.textContent = todo.title;
-        todoEl.appendChild(titleEl);
-
-        const descriptionEl = document.createElement('p');
-        descriptionEl.classList.add('todo-description');
-        descriptionEl.textContent = todo.description;
-        todoEl.appendChild(descriptionEl);
-
-        const actionsEl = document.createElement('div');
-        actionsEl.classList.add('todo-actions');
-
-        const deleteEl = document.createElement('button');
-        deleteEl.setAttribute('type', 'button');
-        deleteEl.classList.add('todo-delete');
-        deleteEl.textContent = 'Delete';
-        actionsEl.appendChild(deleteEl);
-
-        todoEl.appendChild(actionsEl);
-
-        switch (todo.priority) {
-            case 'low':
-                todoEl.classList.add('priority-low');
-                break;
-            case 'mid':
-                todoEl.classList.add('priority-mid');
-                break;
-            case 'high':
-                todoEl.classList.add('priority-high');
-                break;
-        };
-
-        todoEl.addEventListener('click', (e) => {
-            if (e.target.classList.contains('todo-delete')) return;
-            openPopup(todo);
-        });
-
-        deleteEl.addEventListener('click', () => {
-            projects.removeTodo(index);
-            showTodos();
-        });
-
-        return todoEl;
-    };
-
-    const openPopup = (todo) => {
-        const overlay = document.querySelector('#overlay');
-        const popupCard = document.querySelector('#popup-card');
-        const popupTitle = document.querySelector('#popup-title');
-        const popupDescription = document.querySelector('#popup-description');
-        const popupPriority = document.querySelector('#popup-priority')
-
-        popupTitle.value = todo.title;
-        popupDescription.value = todo.description;
-        popupPriority.value = todo.priority;
-        popupCard.dataset.index = projects.getActive().todos.indexOf(todo);
-
-        overlay.classList.remove('hidden');
-        popupCard.classList.remove('hidden');
-    };
-
-    const closePopup = () => {
-        const overlay = document.querySelector('#overlay');
-        const popupCard = document.querySelector('#popup-card');
-
-        overlay.classList.add('hidden');
-        popupCard.classList.add('hidden');
+    if (project.active) {
+      projectEl.classList.add('active');
     }
 
-    const toggleForm = (e) => {
-        const formAdd = document.querySelector('#form-add');
-        const btnSubmit = document.querySelector('#btn-submit');
-        let target = e.target;
+    projectEl.addEventListener('click', () => {
+      projects.setActive(index);
+      showProjects();
+      showTodos();
+    });
 
-        while (target) {
-            // btnSubmit is handled by function submitTodo
-            if (target === btnSubmit) return;
+    return projectEl;
+  };
 
-            if (target === formAdd) {
-                openForm();
-                return;
-            }
-            // go up the DOM
-            target = target.parentNode;
-        }
-        closeForm();
-    };
+  const showTodos = () => {
+    const todoGrid = document.querySelector('#todo-grid');
+    const todoList = projects.getActive().todos;
 
-    const openForm = () => {
-        const title = document.querySelector('#title');
-        const formActions = document.querySelector('#form-actions');
+    todoGrid.replaceChildren();
 
-        title.classList.remove('hidden');
-        formActions.classList.remove('hidden');
-    };
+    todoList.forEach((todo) => {
+      const index = todoList.indexOf(todo);
 
-    const closeForm = () => {
-        const title = document.querySelector('#title');
-        const formActions = document.querySelector('#form-actions');
+      todoGrid.appendChild(constructTodo(todo, index));
+    });
+  };
 
-        title.classList.add('hidden');
-        formActions.classList.add('hidden');
-    };
+  const constructTodo = (todo, index) => {
+    const todoEl = document.createElement('article');
+    todoEl.classList.add('todo-card');
+    todoEl.dataset.index = index;
 
-    const toggleProjectAdd = (e) => {
-        const projectAdd = document.querySelector('#project-add');
-        let target = e.target;
+    const titleEl = document.createElement('header');
+    titleEl.classList.add('todo-title');
+    titleEl.textContent = todo.title;
+    todoEl.appendChild(titleEl);
 
-        while (target) {
-            if (target === projectAdd) {
-                openProjectAdd();
-                return;
-            }
-            // go up the DOM
-            target = target.parentNode;
-        }
-        closeProjectAdd();
-    };
+    const descriptionEl = document.createElement('p');
+    descriptionEl.classList.add('todo-description');
+    descriptionEl.textContent = todo.description;
+    todoEl.appendChild(descriptionEl);
 
-    const openProjectAdd = () => {
-        const projectText = document.querySelector('#project-text');
-        const projectInput = document.querySelector('#project-input');
+    const actionsEl = document.createElement('div');
+    actionsEl.classList.add('todo-actions');
 
-        projectText.classList.add('hidden');
-        projectInput.classList.remove('hidden');
-        projectInput.focus();
-    };
+    const deleteEl = document.createElement('button');
+    deleteEl.setAttribute('type', 'button');
+    deleteEl.classList.add('todo-delete');
+    deleteEl.textContent = 'Delete';
+    actionsEl.appendChild(deleteEl);
 
-    const closeProjectAdd = () => {
-        const projectText = document.querySelector('#project-text');
-        const projectInput = document.querySelector('#project-input');
+    todoEl.appendChild(actionsEl);
 
-        projectText.classList.remove('hidden');
-        projectInput.classList.add('hidden');
+    switch (todo.priority) {
+      case 'low':
+        todoEl.classList.add('priority-low');
+        break;
+      case 'mid':
+        todoEl.classList.add('priority-mid');
+        break;
+      case 'high':
+        todoEl.classList.add('priority-high');
+        break;
+    }
 
-        projectInput.value = '';
-    };
+    todoEl.addEventListener('click', (e) => {
+      if (e.target.classList.contains('todo-delete')) return;
+      openPopup(todo);
+    });
 
-    const submitProject = (e) => {
-        const projectInput = document.querySelector('#project-input');
+    deleteEl.addEventListener('click', () => {
+      projects.removeTodo(index);
+      showTodos();
+    });
 
-        // check if enter was pressed
-        if (e.key !== 'Enter') return;
-        // check if user passed a value
-        if (!projectInput.value) return;
+    return todoEl;
+  };
 
-        projects.create(projectInput.value);
-        closeProjectAdd();
+  const openPopup = (todo) => {
+    const overlay = document.querySelector('#overlay');
+    const popupCard = document.querySelector('#popup-card');
+    const popupTitle = document.querySelector('#popup-title');
+    const popupDescription = document.querySelector('#popup-description');
+    const popupPriority = document.querySelector('#popup-priority');
 
-        // set newly created project to active
-        const index = projects.getList().length - 1;
-        projects.setActive(index);
+    popupTitle.value = todo.title;
+    popupDescription.value = todo.description;
+    popupPriority.value = todo.priority;
+    popupCard.dataset.index = projects.getActive().todos.indexOf(todo);
 
-        showProjects();
-        showTodos();
-    };
+    overlay.classList.remove('hidden');
+    popupCard.classList.remove('hidden');
+  };
 
-    const submitTodo = () => {
-        const title = document.querySelector('#title');
-        const description = document.querySelector('#description');
-        const priority = document.querySelector('#priority');
+  const closePopup = () => {
+    const overlay = document.querySelector('#overlay');
+    const popupCard = document.querySelector('#popup-card');
 
-        if (!title.value && !description.value) {
-            return;
-        }
+    overlay.classList.add('hidden');
+    popupCard.classList.add('hidden');
+  };
 
-        projects.addTodo(title.value, description.value, priority.value);
+  const toggleForm = (e) => {
+    const formAdd = document.querySelector('#form-add');
+    const btnSubmit = document.querySelector('#btn-submit');
+    let target = e.target;
 
-        // clear input fields
-        title.value = '';
-        description.value = '';
-        priority.value = 'none';
-        closeForm();
-        showTodos();
-    };
+    while (target) {
+      // btnSubmit is handled by function submitTodo
+      if (target === btnSubmit) return;
 
-    const saveTodo = () => {
-        const todoIndex = document.querySelector('#popup-card').dataset.index;
-        const title = document.querySelector('#popup-title');
-        const description = document.querySelector('#popup-description');
-        const priority = document.querySelector('#popup-priority');
+      if (target === formAdd) {
+        openForm();
+        return;
+      }
+      // go up the DOM
+      target = target.parentNode;
+    }
+    closeForm();
+  };
 
-        if (!title.value && !description.value) {
-            return;
-        }
+  const openForm = () => {
+    const title = document.querySelector('#title');
+    const formActions = document.querySelector('#form-actions');
 
-        projects.updateTodo(todoIndex, title.value, description.value, priority.value);
+    title.classList.remove('hidden');
+    formActions.classList.remove('hidden');
+  };
 
-        // clear input fields
-        title.value = '';
-        description.value = '';
-        priority.value = 'none';
-        closePopup();
-        showTodos();
-    };
+  const closeForm = () => {
+    const title = document.querySelector('#title');
+    const formActions = document.querySelector('#form-actions');
 
-    const handleReset = () => {
-        const proceed = confirm('Are you sure?');
-        if (proceed) {
-            projects.reset();
-            showProjects();
-            showTodos();
-        }
-    };
+    title.classList.add('hidden');
+    formActions.classList.add('hidden');
+  };
 
-    return {
-        init,
-    };
+  const toggleProjectAdd = (e) => {
+    const projectAdd = document.querySelector('#project-add');
+    let target = e.target;
+
+    while (target) {
+      if (target === projectAdd) {
+        openProjectAdd();
+        return;
+      }
+      // go up the DOM
+      target = target.parentNode;
+    }
+    closeProjectAdd();
+  };
+
+  const openProjectAdd = () => {
+    const projectText = document.querySelector('#project-text');
+    const projectInput = document.querySelector('#project-input');
+
+    projectText.classList.add('hidden');
+    projectInput.classList.remove('hidden');
+    projectInput.focus();
+  };
+
+  const closeProjectAdd = () => {
+    const projectText = document.querySelector('#project-text');
+    const projectInput = document.querySelector('#project-input');
+
+    projectText.classList.remove('hidden');
+    projectInput.classList.add('hidden');
+
+    projectInput.value = '';
+  };
+
+  const submitProject = (e) => {
+    const projectInput = document.querySelector('#project-input');
+
+    // check if enter was pressed
+    if (e.key !== 'Enter') return;
+    // check if user passed a value
+    if (!projectInput.value) return;
+
+    projects.create(projectInput.value);
+    closeProjectAdd();
+
+    // set newly created project to active
+    const index = projects.getList().length - 1;
+    projects.setActive(index);
+
+    showProjects();
+    showTodos();
+  };
+
+  const submitTodo = () => {
+    const title = document.querySelector('#title');
+    const description = document.querySelector('#description');
+    const priority = document.querySelector('#priority');
+
+    if (!title.value && !description.value) {
+      return;
+    }
+
+    projects.addTodo(title.value, description.value, priority.value);
+
+    // clear input fields
+    title.value = '';
+    description.value = '';
+    priority.value = 'none';
+    closeForm();
+    showTodos();
+  };
+
+  const saveTodo = () => {
+    const todoIndex = document.querySelector('#popup-card').dataset.index;
+    const title = document.querySelector('#popup-title');
+    const description = document.querySelector('#popup-description');
+    const priority = document.querySelector('#popup-priority');
+
+    if (!title.value && !description.value) {
+      return;
+    }
+
+    projects.updateTodo(
+      todoIndex,
+      title.value,
+      description.value,
+      priority.value
+    );
+
+    // clear input fields
+    title.value = '';
+    description.value = '';
+    priority.value = 'none';
+    closePopup();
+    showTodos();
+  };
+
+  const handleReset = () => {
+    const proceed = confirm('Are you sure?');
+    if (proceed) {
+      projects.reset();
+      showProjects();
+      showTodos();
+    }
+  };
+
+  return {
+    init,
+  };
 })();
 
 export default dom;

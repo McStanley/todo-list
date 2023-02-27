@@ -1,66 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= htmlWebpackPlugin.options.title %>
-    </title>
-</head>
-
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
     <header class="header">
-        <h1>Todo List</h1>
+      <h1>Todo List</h1>
     </header>
     <aside class="sidebar">
-        <div role="button" id="project-add" class="btn-nav">
-            <p id="project-text">+ Add new project</p>
-            <input type="text" name="project-input" id="project-input" class="hidden" placeholder="Project title">
-        </div>
-        <nav class="nav">
-            <!-- Projects go here -->
-        </nav>
-        <div role="button" id="btn-reset" class="btn-nav">Reset</div>
-        <div class="github-links">
-            <a href="https://github.com/McStanley" target="_blank">
-                <div role="button" class="btn-nav">GitHub Profile</div>
-            </a>
-            <a href="https://github.com/McStanley/todo-list" target="_blank">
-                <div role="button" class="btn-nav">GitHub Repo</div>
-            </a>
-        </div>
+      <div role="button" id="project-add" class="btn-nav">
+        <p id="project-text">+ Add new project</p>
+        <input
+          type="text"
+          name="project-input"
+          id="project-input"
+          class="hidden"
+          placeholder="Project title"
+        />
+      </div>
+      <nav class="nav">
+        <!-- Projects go here -->
+      </nav>
+      <div role="button" id="btn-reset" class="btn-nav">Reset</div>
+      <div class="github-links">
+        <a href="https://github.com/McStanley" target="_blank">
+          <div role="button" class="btn-nav">GitHub Profile</div>
+        </a>
+        <a href="https://github.com/McStanley/todo-list" target="_blank">
+          <div role="button" class="btn-nav">GitHub Repo</div>
+        </a>
+      </div>
     </aside>
     <main class="main">
-        <form id="form-add">
-            <input type="text" name="title" id="title" class="hidden" placeholder="Title">
-            <input type="text" name="description" id="description" placeholder="Add a note...">
-            <div id="form-actions" class="actions hidden">
-                <select name="priority" id="priority">
-                    <option value="none" selected>Priority</option>
-                    <option value="low">Low</option>
-                    <option value="mid">Mid</option>
-                    <option value="high">High</option>
-                </select>
-                <button type="button" id="btn-submit" class="btn-right">Submit</button>
-            </div>
-        </form>
-        <div id="todo-grid"></div>
+      <form id="form-add">
+        <input
+          type="text"
+          name="title"
+          id="title"
+          class="hidden"
+          placeholder="Title"
+        />
+        <input
+          type="text"
+          name="description"
+          id="description"
+          placeholder="Add a note..."
+        />
+        <div id="form-actions" class="actions hidden">
+          <select name="priority" id="priority">
+            <option value="none" selected>Priority</option>
+            <option value="low">Low</option>
+            <option value="mid">Mid</option>
+            <option value="high">High</option>
+          </select>
+          <button type="button" id="btn-submit" class="btn-right">
+            Submit
+          </button>
+        </div>
+      </form>
+      <div id="todo-grid"></div>
     </main>
     <div id="popup-card" class="todo-card hidden">
-        <input id="popup-title" placeholder="Title">
-        <input id="popup-description" placeholder="Description">
-        <div id="popup-actions" class="actions">
-            <select name="popup-priority" id="popup-priority">
-                <option value="none">Priority</option>
-                <option value="low">Low</option>
-                <option value="mid">Mid</option>
-                <option value="high">High</option>
-            </select>
-            <button type="button" id="btn-save" class="btn-right">Save</button>
-        </div>
+      <input id="popup-title" placeholder="Title" />
+      <input id="popup-description" placeholder="Description" />
+      <div id="popup-actions" class="actions">
+        <select name="popup-priority" id="popup-priority">
+          <option value="none">Priority</option>
+          <option value="low">Low</option>
+          <option value="mid">Mid</option>
+          <option value="high">High</option>
+        </select>
+        <button type="button" id="btn-save" class="btn-right">Save</button>
+      </div>
     </div>
     <div id="overlay" class="hidden"></div>
-</body>
-
+  </body>
 </html>
