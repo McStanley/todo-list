@@ -1,14 +1,15 @@
 const todos = (() => {
   class Todo {
-    constructor(title, description, priority) {
+    constructor(id, title, description, priority) {
+      this.id = id;
       this.title = title;
       this.description = description;
       this.priority = priority;
     }
   }
 
-  const create = (title, description, priority) =>
-    new Todo(title, description, priority);
+  const create = (id, title, description, priority) =>
+    new Todo(id, title, description, priority);
 
   return {
     create,

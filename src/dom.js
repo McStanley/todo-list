@@ -1,4 +1,6 @@
 import projects from './projects';
+import { handleLogin, handleLogout, auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const dom = (() => {
   const init = () => {
@@ -7,6 +9,10 @@ const dom = (() => {
     const btnReset = document.querySelector('#btn-reset');
     const btnSave = document.querySelector('#btn-save');
     const overlay = document.querySelector('#overlay');
+    const btnLogin = document.querySelector('#btn-login');
+    const btnLogout = document.querySelector('#btn-logout');
+    const sidebar = document.querySelector('.sidebar');
+    const main = document.querySelector('.main');
 
     document.addEventListener('click', toggleProjectAdd);
     projectInput.addEventListener('keyup', submitProject);
@@ -15,8 +21,28 @@ const dom = (() => {
     btnReset.addEventListener('click', handleReset);
     btnSave.addEventListener('click', saveTodo);
     overlay.addEventListener('click', closePopup);
-    showProjects();
-    showTodos();
+    btnLogin.addEventListener('click', handleLogin);
+    btnLogout.addEventListener('click', handleLogout);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        btnLogin.classList.add('hidden');
+        btnLogout.classList.remove('hidden');
+        sidebar.classList.remove('hidden');
+        main.classList.remove('hidden');
+
+        projects.init();
+      } else {
+        // User is signed out
+        btnLogin.classList.remove('hidden');
+        btnLogout.classList.add('hidden');
+        sidebar.classList.add('hidden');
+        main.classList.add('hidden');
+
+        update();
+      }
+    });
   };
 
   const showProjects = () => {
@@ -26,28 +52,23 @@ const dom = (() => {
     nav.replaceChildren();
 
     projectList.forEach((project) => {
-      // get position of project in the array
-      const index = projectList.indexOf(project);
-
-      nav.appendChild(constructProject(project, index));
+      nav.appendChild(constructProject(project));
     });
   };
 
-  const constructProject = (project, index) => {
+  const constructProject = (project) => {
     const projectEl = document.createElement('div');
     projectEl.setAttribute('role', 'button');
     projectEl.classList.add('btn-nav');
-    projectEl.dataset.index = index;
+    projectEl.dataset.id = project.id;
     projectEl.textContent = project.title;
 
-    if (project.active) {
+    if (project.id === projects.getActiveID()) {
       projectEl.classList.add('active');
     }
 
     projectEl.addEventListener('click', () => {
-      projects.setActive(index);
-      showProjects();
-      showTodos();
+      projects.setActive(project.id);
     });
 
     return projectEl;
@@ -55,21 +76,19 @@ const dom = (() => {
 
   const showTodos = () => {
     const todoGrid = document.querySelector('#todo-grid');
-    const todoList = projects.getActive().todos;
+    const todoList = projects.getActive()?.todos ?? [];
 
     todoGrid.replaceChildren();
 
     todoList.forEach((todo) => {
-      const index = todoList.indexOf(todo);
-
-      todoGrid.appendChild(constructTodo(todo, index));
+      todoGrid.appendChild(constructTodo(todo));
     });
   };
 
-  const constructTodo = (todo, index) => {
+  const constructTodo = (todo) => {
     const todoEl = document.createElement('article');
     todoEl.classList.add('todo-card');
-    todoEl.dataset.index = index;
+    todoEl.dataset.id = todo.id;
 
     const titleEl = document.createElement('header');
     titleEl.classList.add('todo-title');
@@ -110,8 +129,7 @@ const dom = (() => {
     });
 
     deleteEl.addEventListener('click', () => {
-      projects.removeTodo(index);
-      showTodos();
+      projects.removeTodo(todo.id);
     });
 
     return todoEl;
@@ -127,7 +145,7 @@ const dom = (() => {
     popupTitle.value = todo.title;
     popupDescription.value = todo.description;
     popupPriority.value = todo.priority;
-    popupCard.dataset.index = projects.getActive().todos.indexOf(todo);
+    popupCard.dataset.id = todo.id;
 
     overlay.classList.remove('hidden');
     popupCard.classList.remove('hidden');
@@ -220,13 +238,6 @@ const dom = (() => {
 
     projects.create(projectInput.value);
     closeProjectAdd();
-
-    // set newly created project to active
-    const index = projects.getList().length - 1;
-    projects.setActive(index);
-
-    showProjects();
-    showTodos();
   };
 
   const submitTodo = () => {
@@ -249,7 +260,7 @@ const dom = (() => {
   };
 
   const saveTodo = () => {
-    const todoIndex = document.querySelector('#popup-card').dataset.index;
+    const id = document.querySelector('#popup-card').dataset.id;
     const title = document.querySelector('#popup-title');
     const description = document.querySelector('#popup-description');
     const priority = document.querySelector('#popup-priority');
@@ -258,32 +269,30 @@ const dom = (() => {
       return;
     }
 
-    projects.updateTodo(
-      todoIndex,
-      title.value,
-      description.value,
-      priority.value
-    );
+    projects.updateTodo(id, title.value, description.value, priority.value);
 
     // clear input fields
     title.value = '';
     description.value = '';
     priority.value = 'none';
     closePopup();
-    showTodos();
   };
 
   const handleReset = () => {
     const proceed = confirm('Are you sure?');
     if (proceed) {
       projects.reset();
-      showProjects();
-      showTodos();
     }
+  };
+
+  const update = () => {
+    showProjects();
+    showTodos();
   };
 
   return {
     init,
+    update,
   };
 })();
 
