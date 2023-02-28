@@ -125,6 +125,20 @@ const projects = (() => {
     }
   };
 
+  const remove = async (id) => {
+    const userID = auth.currentUser.uid;
+    const projectsRef = collection(db, 'users', userID, 'projects');
+    const projectRef = doc(projectsRef, id);
+
+    try {
+      await deleteDoc(projectRef);
+    } catch (error) {
+      console.error('Error removing document: ', error);
+    }
+
+    setActive(projectList[0]?.id || null);
+  };
+
   const addTodo = async (title, description, priority) => {
     const user = auth.currentUser;
     const projectId = getActive().id;
@@ -204,6 +218,7 @@ const projects = (() => {
     getActive,
     getActiveID,
     create,
+    remove,
     addTodo,
     removeTodo,
     updateTodo,

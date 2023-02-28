@@ -1,6 +1,7 @@
 import projects from './projects';
 import { handleLogin, handleLogout, auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import TrashCan from './assets/trash-can.png';
 
 const dom = (() => {
   const init = () => {
@@ -65,6 +66,16 @@ const dom = (() => {
 
     if (project.id === projects.getActiveID()) {
       projectEl.classList.add('active');
+
+      const deleteEl = document.createElement('button');
+      deleteEl.classList.add('project-delete');
+      deleteEl.addEventListener('click', () => handleRemove(project.id));
+
+      const imgEl = document.createElement('img');
+      imgEl.src = TrashCan;
+
+      deleteEl.appendChild(imgEl);
+      projectEl.appendChild(deleteEl);
     }
 
     projectEl.addEventListener('click', () => {
@@ -276,6 +287,13 @@ const dom = (() => {
     description.value = '';
     priority.value = 'none';
     closePopup();
+  };
+
+  const handleRemove = (id) => {
+    const proceed = confirm('Are you sure?');
+    if (proceed) {
+      projects.remove(id);
+    }
   };
 
   const handleReset = () => {
